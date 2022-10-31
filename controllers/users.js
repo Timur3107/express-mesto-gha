@@ -15,11 +15,15 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      res.send({ data: user });
+      if (user) {
+        res.send({ data: user });
+        return;
+      }
+      res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь не найден!' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь не найден!' });
+        res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные!' });
         return;
       }
       res.status(INTERNAL_SERVER_ERROR_CODE).send({ message: 'Произошла внутренняя ошибка сервера!' });
