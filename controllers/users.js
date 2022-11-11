@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const INCORRECT_DATA_ERROR_CODE = 400;
@@ -31,17 +33,28 @@ module.exports.getUser = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+
+  bcrypt.hash(password, 10)
+    .then((hash) => (
+      User.create({
+        name, about, avatar, email, password: hash,
+      })
+    ))
     .then((user) => {
+      console.log(user);
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные при создании пользователя!' });
-        return;
+      if (err.code === 11000) {
+        return res.status(409).send({ message: 'Такой пользователь существует' });
       }
-      res.status(INTERNAL_SERVER_ERROR_CODE).send({ message: 'Произошла внутренняя ошибка сервера!' });
+      if (err.name === 'ValidationError') {
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные при создании пользователя!' });
+      }
+      return res.status(INTERNAL_SERVER_ERROR_CODE).send({ message: 'Произошла внутренняя ошибка сервера!' });
     });
 };
 
@@ -92,5 +105,21 @@ module.exports.updateAvatar = (req, res) => {
         return;
       }
       res.status(INTERNAL_SERVER_ERROR_CODE).send({ message: err.message });
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
+      res.send({ token });
+    })
+
+    .catch((err) => {
+      res
+        .status(401)
+        .send({ message: err.message });
     });
 };
