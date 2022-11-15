@@ -2,9 +2,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const NotFoundError = require('../utils/NotFoundError');
-const IncrorrectDataError = require('../utils/IncorrectDataError');
-const ConflictError = require('../utils/ConflictError');
+const NotFoundError = require('../errors/NotFoundError');
+const IncrorrectDataError = require('../errors/IncorrectDataError');
+const ConflictError = require('../errors/ConflictError');
 
 // const INCORRECT_DATA_ERROR_CODE = 400;
 // const NOT_FOUND_ERROR_CODE = 404;

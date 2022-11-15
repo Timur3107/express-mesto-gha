@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
-const { errorHandler } = require('./utils/errorHandler');
+const { errorHandler } = require('./middlewares/errorHandler');
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -15,8 +16,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Такая страница не найдена!' });
+app.use(() => {
+  throw new NotFoundError('Такая страница не найдена!');
 });
 
 app.use(errors());

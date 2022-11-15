@@ -11,7 +11,7 @@ const {
   getUserByIdValidate,
   updateUserValidate,
   updateAvatarValidate,
-} = require('../utils/celebrateValidators');
+} = require('../middlewares/celebrateValidators');
 
 router.get('/users/me', auth, getUserMe);
 router.get('/users', auth, getUsers);

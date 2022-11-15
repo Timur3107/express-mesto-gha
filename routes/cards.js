@@ -7,15 +7,13 @@ const {
 
 const {
   createCardValidate,
-  deleteCardValidate,
-  likeCardValidate,
-  dislikeCardValidate,
-} = require('../utils/celebrateValidators');
+  idCardValidate,
+} = require('../middlewares/celebrateValidators');
 
 router.get('/cards', auth, getCards);
 router.post('/cards', createCardValidate, auth, createCard);
-router.delete('/cards/:cardId', deleteCardValidate, auth, deleteCard);
-router.put('/cards/:cardId/likes', likeCardValidate, auth, likeCard);
-router.delete('/cards/:cardId/likes', dislikeCardValidate, auth, dislikeCard);
+router.delete('/cards/:cardId', idCardValidate, auth, deleteCard);
+router.put('/cards/:cardId/likes', idCardValidate, auth, likeCard);
+router.delete('/cards/:cardId/likes', idCardValidate, auth, dislikeCard);
 
 module.exports = router;
