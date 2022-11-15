@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
 const { errorHandler } = require('./utils/errorHandler');
 
@@ -18,6 +19,7 @@ app.use((req, res) => {
   res.status(404).send({ message: 'Такая страница не найдена!' });
 });
 
+app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT);

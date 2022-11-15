@@ -5,10 +5,17 @@ const {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
 
+const {
+  createCardValidate,
+  deleteCardValidate,
+  likeCardValidate,
+  dislikeCardValidate,
+} = require('../utils/celebrateValidators');
+
 router.get('/cards', auth, getCards);
-router.post('/cards', auth, createCard);
-router.delete('/cards/:cardId', auth, deleteCard);
-router.put('/cards/:cardId/likes', auth, likeCard);
-router.delete('/cards/:cardId/likes', auth, dislikeCard);
+router.post('/cards', createCardValidate, auth, createCard);
+router.delete('/cards/:cardId', deleteCardValidate, auth, deleteCard);
+router.put('/cards/:cardId/likes', likeCardValidate, auth, likeCard);
+router.delete('/cards/:cardId/likes', dislikeCardValidate, auth, dislikeCard);
 
 module.exports = router;

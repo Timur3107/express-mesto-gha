@@ -5,14 +5,22 @@ const {
   getUsers, getUserById, createUser, updateUser, updateAvatar, login, getUserMe,
 } = require('../controllers/users');
 
+const {
+  createUserValidate,
+  loginValidate,
+  getUserByIdValidate,
+  updateUserValidate,
+  updateAvatarValidate,
+} = require('../utils/celebrateValidators');
+
 router.get('/users/me', auth, getUserMe);
 router.get('/users', auth, getUsers);
-router.get('/users/:userId', auth, getUserById);
+router.get('/users/:userId', getUserByIdValidate, auth, getUserById);
 
-router.patch('/users/me', auth, updateUser);
-router.patch('/users/me/avatar', auth, updateAvatar);
+router.patch('/users/me', auth, updateUserValidate, updateUser);
+router.patch('/users/me/avatar', auth, updateAvatarValidate, updateAvatar);
 
-router.post('/signin', login);
-router.post('/signup', createUser);
+router.post('/signin', loginValidate, login);
+router.post('/signup', createUserValidate, createUser);
 
 module.exports = router;
